@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "*.sol": "solidity",
+    "unistd.h": "c",
+    "utils.h": "c",
+    "types.h": "c",
+    "executor.h": "c",
+    "output.h": "c",
+    "parser.h": "c",
+    "string": "c"
+  }
+}
