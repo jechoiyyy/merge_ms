@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 21:43:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 20:26:01 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 21:23:54 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ t_cmd	*parse_simple_command(t_token **current, t_prompt *prompt)
 	{
 		if (is_redirect_token((*current)->type))
 		{
-			if (!parse_redirections(current, cmd))
+			if (parse_redirections(current, cmd) == FAILURE)
 			{
 				free_commands(cmd);
 				return (NULL);
@@ -66,11 +66,11 @@ int	parse_redirections(t_token **current, t_cmd *cmd)
 	if (redir_type == T_REDIR_IN)
 		set_input_file(cmd->input_file, *current);
 	else if (redir_type == T_REDIR_OUT)
-		set_output_file(cmd, cmd->output_file, *current, 0);
+		set_output_file(cmd, *current, 0);
 	else if (redir_type == T_APPEND)
-		set_output_file(cmd, cmd->output_file, *current, 1);
-	// else if (redir_type == T_HEREDOC)
-	// 	set_heredoc_delimiter(cmd, *current);
+		set_output_file(cmd, *current, 1);
+	else if (redir_type == T_HEREDOC)
+		*current = (*current)->next;
 	*current = (*current)->next;
 	return (SUCCESS);
 }

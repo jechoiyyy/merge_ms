@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:41:47 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/09 19:19:35 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 21:01:12 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ typedef struct s_filename
 {
     char    *filename;
     int     flag;
+	struct s_filename	*next;
 }   t_filename;
 
 typedef struct  s_cmd

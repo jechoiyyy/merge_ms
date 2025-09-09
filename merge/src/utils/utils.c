@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 20:05:55 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 14:35:01 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 20:55:00 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	is_redirect_token(t_token_type type)
 {
-	return (type == 2 || type == 3 \
-		|| type == 4 || type == 5);
+	return (type == T_REDIR_IN || type == T_REDIR_OUT \
+		|| type == T_APPEND || type == T_HEREDOC);
 }
 
 char	*ft_strncpy(char *dest, const char *src, size_t n)

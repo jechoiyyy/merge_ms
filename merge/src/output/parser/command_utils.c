@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 10:49:06 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 19:52:25 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 21:11:01 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,12 @@ t_cmd	*create_command(t_hd *hd_lst)
 	if (!cmd)
 		return (NULL);
 	cmd->args = NULL;
-	cmd->input_file = malloc(sizeof(t_filename));
+	cmd->input_file = create_filename();
 	if (!cmd->input_file)
 		return (free(cmd), NULL);
-	cmd->input_file->filename = NULL;
-	cmd->input_file->flag = 0;
-	cmd->output_file = malloc(sizeof(t_filename));
+	cmd->output_file = create_filename();
 	if (!cmd->output_file)
 		return (free(cmd->input_file), free(cmd), NULL);
-	cmd->output_file->filename = NULL;
-	cmd->output_file->flag = 0;
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	last = hd_lst;

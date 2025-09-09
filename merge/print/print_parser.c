@@ -13,7 +13,33 @@ void print_filename(t_filename *filename, int index)
     
     printf("  FILENAME[%d]:\n", index);
     printf("    filename: %s\n", filename->filename ? filename->filename : "NULL");
-    printf("    flag: %d\n", filename->flag);
+    printf("    flag: %s\n", filename->flag ? "CORRECT" : "WRONG");
+}
+
+void	print_output_file_list(t_filename *head)
+{
+	t_filename	*current;
+	int			index;
+
+	if (!head)
+	{
+		printf("  output_file list: EMPTY\n");
+		return ;
+	}
+	
+	printf("  output_file list:\n");
+	current = head;
+	index = 0;
+	while (current)
+	{
+		printf("  [%d] filename: \"%s\", flag: %d (%s)\n", 
+			   index, 
+			   current->filename ? current->filename : "NULL",
+			   current->flag,
+			   current->flag ? "WRONG" : "CORRECT");
+		current = current->next;
+		index++;
+	}
 }
 
 // 단일 cmd 구조체 출력 함수
@@ -42,18 +68,16 @@ void print_cmd(t_cmd *cmd, int index)
 // input_file 출력 (44번째 줄 근처)
     printf("  input_file: ");
     if (cmd->input_file)
-        printf("filename=\"%s\", flag=%d\n", 
+        printf("filename=\"%s\", flag=%s\n", 
             cmd->input_file->filename ? cmd->input_file->filename : "NULL",
-            cmd->input_file->flag);
+            cmd->input_file->flag ? "WRONG" : "CORRECT");
     else
         printf("NULL\n");
 
     // output_file 출력 (48번째 줄 근처)
-    printf("  output_file: ");
+    printf("  output_file: \n");
     if (cmd->output_file)
-        printf("filename=\"%s\", flag=%d\n", 
-            cmd->output_file->filename ? cmd->output_file->filename : "NULL",
-            cmd->output_file->flag);
+        print_output_file_list(cmd->output_file);
     else
         printf("NULL\n");
     
