@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 10:49:06 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 19:09:20 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 19:52:25 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,16 @@ t_cmd	*create_command(t_hd *hd_lst)
 	if (!cmd)
 		return (NULL);
 	cmd->args = NULL;
-	cmd->input_file = NULL;
-	cmd->output_file = NULL;
+	cmd->input_file = malloc(sizeof(t_filename));
+	if (!cmd->input_file)
+		return (free(cmd), NULL);
+	cmd->input_file->filename = NULL;
+	cmd->input_file->flag = 0;
+	cmd->output_file = malloc(sizeof(t_filename));
+	if (!cmd->output_file)
+		return (free(cmd->input_file), free(cmd), NULL);
+	cmd->output_file->filename = NULL;
+	cmd->output_file->flag = 0;
 	cmd->append_mode = 0;
 	cmd->next = NULL;
 	last = hd_lst;
@@ -67,7 +75,7 @@ void add_argument(t_cmd *cmd, char *arg)
 	new_args[count] = malloc(ft_strlen(arg) + 1);
 	if (!new_args[count])
 	{
-		free(new_args[count]);
+		free(new_args);
 		return ;
 	}
 	ft_strcpy(new_args[count], arg);
@@ -103,9 +111,17 @@ void	free_commands(t_cmd *commands)
 		next = current->next;
 		free_args(current->args);
 		if (current->input_file)
+		{
+			if (current->input_file->filename)
+				free(current->input_file->filename);
 			free(current->input_file);
+		}
 		if (current->output_file)
+		{
+			if (current->output_file->filename)
+				free(current->output_file->filename);
 			free(current->output_file);
+		}
 		free(current);
 		current = next;	
 	}

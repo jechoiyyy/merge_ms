@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 11:01:35 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 19:23:16 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 20:02:20 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	set_input_file(t_filename *file, t_token *current)
 {
-	if (!file || !current)
+	if (!file || !current || !current->value)
 		return ;
 	if (file->filename)
 		free(file->filename);
@@ -28,7 +28,7 @@ void	set_input_file(t_filename *file, t_token *current)
 
 void	set_output_file(t_cmd *cmd, t_filename *file, t_token *current, int append)
 {
-	if (!file || !current)
+	if (!file || !current || !current->value)
 		return ;
 	if (file->filename)
 		free(file->filename);

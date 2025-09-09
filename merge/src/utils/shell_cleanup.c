@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 10:49:24 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 13:28:57 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 20:00:19 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,7 @@ void	cleanup_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	if (shell->envp_list)
-	{
-		free_env_list(shell->envp_list);
-		shell->envp_list = NULL;
-	}
+	shell->envp_list = NULL;
 	if (shell->env_array)
 	{
 		free_env_array(shell->env_array);

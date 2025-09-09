@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 21:43:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 19:18:47 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/09 19:59:19 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	parse_redirections(t_token **current, t_cmd *cmd)
 		return (FAILURE);
 	redir_type = (*current)->type;
 	*current = (*current)->next;
-	if (!*current || (*current)->type != 0)
+	if (!*current || (*current)->type != T_WORD)
 	{
 		printf("minishell: syntax error near redirection\n");
 		return (FAILURE);
