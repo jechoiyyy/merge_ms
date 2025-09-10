@@ -3,7 +3,7 @@
 
 # include "types.h"
 # include "utils.h"
-# include "parser/parser.h"
+# include "parser.h"
 //# include "executor.h"
 
 int	output_process(t_shell *shell, t_prompt *prompt);

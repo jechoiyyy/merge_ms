@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 21:31:12 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 19:21:45 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:16:10 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,12 @@ t_cmd	*parse_pipeline(t_token **current, t_prompt *prompt)
 	if (!first_cmd)
 		return (NULL);
 	last_cmd = first_cmd;
+	printf("DEBUG: Starting Parse_pipeline\n");
+	printf("DEBUG: First Command parsed\n");
+	printf("%s\n", (*current)->value);
 	while (*current && (*current)->type == T_PIPE)
 	{
+		printf("DEBUG: Found pipe, parsing next command\n");
 		*current = (*current)->next;
 		if (!*current)
 		{
@@ -53,8 +57,10 @@ t_cmd	*parse_pipeline(t_token **current, t_prompt *prompt)
 			free_commands(first_cmd);
 			return (NULL);
 		}
+		printf("DEBUG: Linked new cmd to pipeline\n");
 		last_cmd->next = new_cmd;
 		last_cmd = new_cmd;
 	}
-	return (first_cmd);
+	printf("DEBUG: Pipeline parsing complete, returning first_cmd\n");
+		return (first_cmd);
 }

@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 11:01:35 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 21:21:10 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:07:02 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,14 +63,26 @@ void	set_output_file(t_cmd *cmd, t_token *current, int append)
 
 	if (!cmd || !current || !current->value)
 		return ;
-	new_file = create_filename();
-	new_file->filename = malloc(ft_strlen(current->value) + 1);
-	if (!new_file)
-		return ;
-	ft_strcpy(new_file->filename, current->value);
-	if (current->type == T_WRONG_FILNAME)
-		new_file->flag = 1;
-	add_filename_to_list(&(cmd->output_file), new_file);
+	if (cmd->output_file->filename == NULL)
+	{
+		cmd->output_file->filename = malloc(ft_strlen(current->value) + 1);
+		if (!cmd->output_file->filename)
+			return ;
+		ft_strcpy(cmd->output_file->filename, current->value);
+		if (current->type == T_WRONG_FILNAME)
+			cmd->output_file->flag = 1;
+	}
+	else
+	{
+		new_file = create_filename();
+		new_file->filename = malloc(ft_strlen(current->value) + 1);
+		if (!new_file)
+			return ;
+		ft_strcpy(new_file->filename, current->value);
+		if (current->type == T_WRONG_FILNAME)
+			new_file->flag = 1;
+		add_filename_to_list(&(cmd->output_file), new_file);
+	}
 	cmd->append_mode = append;
 }
 
