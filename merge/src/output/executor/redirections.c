@@ -21,7 +21,8 @@ int	setup_redirections(t_cmd *cmd)
 		return (FAILURE);
 	fd_in = -1;
 	fd_out = -1;
-	if (cmd->input_file)
+	if (cmd->input_file && cmd->input_file->filename && 
+		strcmp(cmd->input_file->filename, "NULL") != 0)
 	{
 		if (cmd->input_file->flag == 1)
 			return (print_error("export값", "ambiguous redirect"), FAILURE);
@@ -35,7 +36,8 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(fd_in);
 	}
-	if (cmd->output_file)
+	if (cmd->output_file && cmd->output_file->filename && 
+		strcmp(cmd->output_file->filename, "NULL") != 0)
 	{
 		if (cmd->output_file->flag == 1)
 			return (print_error("export값", "ambiguous redirect"), FAILURE);
@@ -49,7 +51,7 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(fd_out);
 	}
-	if (cmd->hd)
+	if (cmd->hd && cmd->hd != -1)
 	{
 		fd_in = cmd->hd;
 		if (fd_in == -1)

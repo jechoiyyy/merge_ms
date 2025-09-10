@@ -76,20 +76,38 @@ void	setup_child_process(t_cmd *cmd, int *pipe_fds, \
 void	setup_parent_process(int *pipe_fds, int cmd_index, int cmd_count)
 {
 	// 부모 프로세스에서는 사용한 파이프 끝을 닫아야 함
-	if (cmd_index > 0)
+	if (!pipe_fds)
+		return ;
+	
+	// 이전 파이프의 읽기 끝 닫기 (이미 자식에게 전달됨)
+	if (cmd_index > 0 && pipe_fds[(cmd_index - 1) * 2 + READ_END] >= 0)
+	{
 		close(pipe_fds[(cmd_index - 1) * 2 + READ_END]);
-	if (cmd_index < cmd_count - 1)
+		pipe_fds[(cmd_index - 1) * 2 + READ_END] = -1;
+	}
+	
+	// 현재 파이프의 쓰기 끝 닫기 (자식에게 전달됨)
+	if (cmd_index < cmd_count - 1 && pipe_fds[cmd_index * 2 + WRITE_END] >= 0)
+	{
 		close(pipe_fds[cmd_index * 2 + WRITE_END]);
+		pipe_fds[cmd_index * 2 + WRITE_END] = -1;
+	}
 }
 
 void	close_all_pipes(int *pipe_fds, int pipe_count)
 {
 	int	i;
 
+	if (!pipe_fds || pipe_count <= 0)
+		return ;
 	i = 0;
 	while (i < pipe_count * 2)
 	{
-		close(pipe_fds[i]);
+		if (pipe_fds[i] >= 0)
+		{
+			close(pipe_fds[i]);
+			pipe_fds[i] = -1;  // 닫은 후 -1로 표시
+		}
 		i++;
 	}
 }

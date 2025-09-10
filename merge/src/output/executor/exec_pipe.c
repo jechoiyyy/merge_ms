@@ -15,6 +15,7 @@
 static int	create_pipes(int **pipe_fds, int cmd_count)
 {
 	int	i;
+	int	j;
 
 	if (cmd_count <= 1)
 	{
@@ -24,16 +25,31 @@ static int	create_pipes(int **pipe_fds, int cmd_count)
 	*pipe_fds = malloc(sizeof(int) * 2 * (cmd_count - 1));
 	if (!*pipe_fds)
 		return (FAILURE);
+	
+	// 모든 FD를 -1로 초기화 (안전을 위해)
+	i = 0;
+	while (i < (cmd_count - 1) * 2)
+	{
+		(*pipe_fds)[i] = -1;
+		i++;
+	}
+	
+	// 파이프 생성
 	i = 0;
 	while (i < cmd_count - 1)
 	{
 		if (pipe(&(*pipe_fds)[i * 2]) == -1)
 		{
 			perror("pipe");
-			while (--i >= 0)
+			// 이미 생성된 파이프들 정리
+			j = 0;
+			while (j < i)
 			{
-				close((*pipe_fds)[i * 2]);
-				close((*pipe_fds)[i * 2 + 1]);
+				if ((*pipe_fds)[j * 2] >= 0)
+					close((*pipe_fds)[j * 2]);
+				if ((*pipe_fds)[j * 2 + 1] >= 0)
+					close((*pipe_fds)[j * 2 + 1]);
+				j++;
 			}
 			free(*pipe_fds);
 			*pipe_fds = NULL;
@@ -63,15 +79,32 @@ static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int *pipe_fds,
 							int cmd_index, int cmd_count)
 {
 	pid_t	pid;
+	int		exit_code;
 
 	pid = fork_process(); 
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
 	{
-		// 자식 프로세스
+		// 자식 프로세스: 순서 중요!
+		// 1. 파이프 설정 및 모든 파이프 FD 닫기
 		setup_child_process(cmd, pipe_fds, cmd_index, cmd_count);
-		exit(execute_command(cmd, shell));
+		
+		// 2. 리다이렉션 설정 (파이프 설정 후에)
+		if (setup_redirections(cmd) == FAILURE)
+			exit(1);
+		
+		// 3. 명령어 유효성 검사
+		if (!cmd || !cmd->args || !cmd->args[0])
+			exit(1);
+		
+		// 4. 명령어 실행
+		if (is_builtin_command(cmd->args[0]))
+			exit_code = execute_builtin(cmd, shell);
+		else
+			exit_code = execute_external(cmd, shell);
+		
+		exit(exit_code);
 	}
 	else
 	{
