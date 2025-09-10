@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ready_minishell.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsagong <dsagong@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 15:06:40 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/05 17:35:06 by dsagong          ###   ########.fr       */
+/*   Updated: 2025/09/10 16:10:54 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 int	ready_minishell(t_prompt *prompt, char **envp)
 {
 	ft_memset(prompt, 0, sizeof(t_prompt));
-	set_main_signal();
+	setup_signals();
 	prompt->envp_lst = set_envp(envp);
 	if (!prompt->envp_lst)
 		return (0);

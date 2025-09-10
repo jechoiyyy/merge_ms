@@ -11,9 +11,10 @@ int	output_process(t_shell *shell, t_prompt *prompt)
 	if (!cmd)
 		return (printf("Parsing failed\n"), FAILURE);
 	print_cmd_list(cmd);
-	// if (execute_pipeline(cmd, shell) == FAILURE)
-    //     return (FAILURE);
+	printf("Starting EXEC\n");
+	if (execute_pipeline(cmd, shell) != SUCCESS)
+        return (FAILURE);
 	free_commands(cmd);
 	cleanup_shell(shell);
-	return (SUCCESS);
+	return (shell->last_exit_status);
 }

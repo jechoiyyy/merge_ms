@@ -47,7 +47,7 @@ SETUP_LOC = $(addprefix $(SETUP_DIR)/, $(SETUP_SRC))
 
 
 SIGNAL_DIR = $(SRC_DIR)/signal
-SIGNAL_SRC = set_signal.c
+SIGNAL_SRC = signal_setup.c signal.c
 SIGNAL_LOC = $(addprefix $(SIGNAL_DIR)/, $(SIGNAL_SRC))
 
 
@@ -64,13 +64,13 @@ OUTPUT_DIR = $(SRC_DIR)/output
 OUTPUT_SRC = init.c output_process.c
 OUTPUT_LOC = $(addprefix $(OUTPUT_DIR)/, $(OUTPUT_SRC))
 
-# BUILTINS_DIR = $(OUTPUT_DIR)/builtins
-# BUILTINS_SRC = export_print.c export_utils.c export_utils2.c ft_cd.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c
-# BUILTINS_LOC = $(addprefix $(BUILTINS_DIR)/, $(BUILTINS_SRC))
+BUILTINS_DIR = $(OUTPUT_DIR)/builtins
+BUILTINS_SRC = export_print.c export_utils.c export_utils2.c ft_cd.c ft_echo.c ft_env.c ft_exit.c ft_export.c ft_pwd.c ft_unset.c
+BUILTINS_LOC = $(addprefix $(BUILTINS_DIR)/, $(BUILTINS_SRC))
 
-# EXECUTOR_DIR = $(OUTPUT_DIR)/executor
-# EXECUTOR_SRC = exec_cmd.c exec_manage.c exec_pipe.c exec path_utils.c redirecitons.c
-# EXECUTOR_LOC = $(addprefix $(EXECUTOR_DIR)/, $(EXECUTOR_SRC))
+EXECUTOR_DIR = $(OUTPUT_DIR)/executor
+EXECUTOR_SRC = exec_cmd.c exec_manage.c exec_pipe.c path_utils.c redirections.c
+EXECUTOR_LOC = $(addprefix $(EXECUTOR_DIR)/, $(EXECUTOR_SRC))
 
 PARSER_DIR = $(OUTPUT_DIR)/parser
 PARSER_SRC = command_utils.c parse_command.c parse_tokens.c set_utils.c
@@ -96,8 +96,8 @@ INCLUDES =  -I. \
 			-I$(LIBFT_DIR) \
 			-I$(OUTPUT_DIR) \
 			-I$(PARSER_DIR) \
-# 			-I$(BUILTINS_DIR) \
-# 			-I$(EXECUTOR_DIR) \
+			-I$(BUILTINS_DIR) \
+			-I$(EXECUTOR_DIR) \
 
 SRCS =  main.c \
 		$(INPUT_LOC) \
@@ -113,8 +113,8 @@ SRCS =  main.c \
 		$(LST_LOC) \
 		$(OUTPUT_LOC) \
 		$(PARSER_LOC) \
-# 		$(BUILTINS_LOC) \
-# 		$(EXECUTOR_LOC) \
+		$(BUILTINS_LOC) \
+		$(EXECUTOR_LOC) \
 
 #will delete
 D_INCLUDES = -I$(PRINT_DIR)

@@ -1,0 +1,7 @@
+{
+  "files.associations": {
+    "*.sol": "solidity",
+    "executor.h": "c",
+    "signal.h": "c"
+  }
+}

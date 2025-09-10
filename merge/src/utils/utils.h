@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 09:51:37 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/09 14:39:56 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:31:57 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*ft_strcat(char *dest, const char *src);
 int init_shell(t_shell *shell, t_envp *envp_lst);
 t_envp	*create_env_node(char *env_str);
 void	add_env_node(t_envp **head, t_envp *new_node);
-char	**env_list_to_array(t_envp *env_list);
+char	**env_list_to_array(t_envp *envp_list);
 void	free_env_list(t_envp *head);
 void	free_env_array(char **env_array);
 void	cleanup_shell(t_shell *shell);

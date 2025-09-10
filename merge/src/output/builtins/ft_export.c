@@ -6,11 +6,11 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:35:15 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/05 16:09:04 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 14:27:33 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
 static int	process_export_arg(t_shell *shell, char *arg)
 {
@@ -18,7 +18,7 @@ static int	process_export_arg(t_shell *shell, char *arg)
 	char	*value;
 	int		result;
 
-	key = extract_key(arg);
+	key = extract_key2(arg);
 	if (!key)
 		return (FAILURE);
 	if (!is_valid_identifier(key))

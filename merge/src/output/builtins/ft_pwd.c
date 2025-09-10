@@ -6,11 +6,11 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:09:03 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/05 16:08:27 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:33:57 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
 int	is_builtin_command(char *cmd)
 {

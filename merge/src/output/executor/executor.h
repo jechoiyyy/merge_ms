@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/09 12:30:29 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 13:50:10 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 14:23:35 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 # include <stdio.h>
 # include <signal.h>
 # include "types.h"
+# include "builtins.h"
+# include "utils.h"
 
 # define READ_END 0
 # define WRITE_END 1
@@ -38,6 +40,6 @@ int		count_commands(t_cmd *cmd);
 int		setup_redirections(t_cmd *cmd);
 int		open_input_file(char *filename);
 int		open_output_file(char *filename, int append_mode);
-int		setup_heredoc(char *delimiter);
+//int		setup_heredoc(char *delimiter);
 
 #endif

@@ -6,20 +6,20 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:35:19 by jechoi            #+#    #+#             */
-/*   Updated: 2025/08/27 20:45:21 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:34:00 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
-static void	remove_env_node(t_env **env_list, char *key)
+static void	remove_env_node(t_envp **envp_list, char *key)
 {
-	t_env	*current;
-	t_env	*prev;
+	t_envp	*current;
+	t_envp	*prev;
 
-	if (!env_list || !*env_list || !key)
+	if (!envp_list || !*envp_list || !key)
 		return ;
-	current = *env_list;
+	current = *envp_list;
 	prev = NULL;
 	while (current)
 	{
@@ -28,7 +28,7 @@ static void	remove_env_node(t_env **env_list, char *key)
 			if (prev)
 				prev->next = current->next;
 			else
-				*env_list = current->next;
+				*envp_list = current->next;
 			if (current->key)
 				free(current->key);
 			if (current->value)
@@ -52,7 +52,7 @@ int	ft_unset(t_cmd *cmd, t_shell *shell)
 	i = 1;
 	while (cmd->args[i])
 	{
-		remove_env_node(&shell->env_list, cmd->args[i]);
+		remove_env_node(&shell->envp_list, cmd->args[i]);
 		i++;
 	}
 	return (SUCCESS);

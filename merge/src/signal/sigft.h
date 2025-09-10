@@ -1,20 +1,21 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   sigft.h                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: dsagong <dsagong@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/03 15:19:58 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/08 14:20:50 by dsagong          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef SIGFT_H
 # define SIGFT_H
+
+# include "types.h"
 # include <signal.h>
 
-void	set_main_signal(void);
-void	set_hd_signal(void);
+# define SIG_INTERACTIVE 1
+# define SIG_NON_INTERACTIVE 0
+# define SIG_CHILD 2
+
+extern volatile sig_atomic_t g_signal_received;
+
+void	setup_signals(void);
+void	signal_handler_interactive(int sig);
+void	signal_handler_noninteractive(int sig);
+void	setup_signals_interactive(void);
+void	setup_signals_noninteractive(void);
+void	setup_signals_child(void);
+void	handle_signal_in_loop(t_shell *shell);
 
 #endif

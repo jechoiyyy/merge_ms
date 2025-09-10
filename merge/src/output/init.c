@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 09:05:00 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 20:07:25 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:31:57 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static char	*create_env_string(t_envp *current)
 	return (env_str);
 }
 
-char	**env_list_to_array(t_envp *env_list)
+char	**env_list_to_array(t_envp *envp_list)
 {
 	t_envp	*current;
 	char	**array;
@@ -102,7 +102,7 @@ char	**env_list_to_array(t_envp *env_list)
 	int		i;
 
 	count = 0;
-	current = env_list;
+	current = envp_list;
 	while (current)
 	{
 		count++;
@@ -112,7 +112,7 @@ char	**env_list_to_array(t_envp *env_list)
 	if (!array)
 		return (NULL);
 	i = 0;
-	current = env_list;
+	current = envp_list;
 	while (current)
 	{
 		array[i] = create_env_string(current);

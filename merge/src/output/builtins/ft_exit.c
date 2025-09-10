@@ -6,11 +6,11 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:12:54 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/02 17:16:29 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:33:47 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
 static int	is_numeric(char *str)
 {

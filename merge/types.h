@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:41:47 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/09 21:01:12 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 16:12:07 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,11 @@ typedef struct s_filename
 
 typedef struct  s_cmd
 {
-    char    **args; // token_lst를 파싱
-    t_filename    *input_file; // token_lst를 받아와서 파싱
-    t_filename    *output_file; // token_lst 파싱
-    int     append_mode; // token_lst 파싱
-    int		hd; // int fd로 받아오기 전환 / 
-    // fd로 만들었으니까 따로 동작할 필요없고, fd를 stdin_fillno로 넣어서 사용
+    char    **args;
+    t_filename    *input_file;
+    t_filename    *output_file;
+    int     append_mode;
+    int		hd;
     struct s_cmd    *next;
 }   t_cmd;
 

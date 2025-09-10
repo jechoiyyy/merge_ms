@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 19:57:07 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 12:32:23 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:31:57 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@ char	*get_path_env(t_shell *shell)
 {
 	t_envp	*current;
 
-	if (!shell || !shell->env_list)
+	if (!shell || !shell->envp_list)
 		return (NULL);
-	current = shell->env_list;
+	current = shell->envp_list;
 	while (current)
 	{
 		if (current->key && strcmp(current->key, "PATH") == 0)

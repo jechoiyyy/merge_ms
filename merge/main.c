@@ -12,6 +12,7 @@ int	main(int ac, char **av, char **envp)
 {
 	t_prompt	prompt;
 	t_shell		shell;
+	int			exit_status;
 
 	if (ac != 1 || !av || ready_minishell(&prompt, envp) == 0)
 		return (-1);
@@ -21,7 +22,7 @@ int	main(int ac, char **av, char **envp)
 			break ;
 		if (prompt.token_lst)
 			g_exit_status = 0;
-		output_process(&shell, &prompt);
+		exit_status = output_process(&shell, &prompt);
 		free(prompt.input);
 		clear_token_list(&prompt.token_lst);
 		clear_hd_list(&prompt.hd_lst);
@@ -30,5 +31,5 @@ int	main(int ac, char **av, char **envp)
 	clear_token_list(&prompt.token_lst);
 	clear_envp_list(&prompt.envp_lst);
 	clear_hd_list(&prompt.hd_lst);
-	return (0);
+	return (exit_status);
 }

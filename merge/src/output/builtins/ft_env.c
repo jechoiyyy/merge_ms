@@ -6,19 +6,19 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:10:59 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/05 16:09:44 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:38:46 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
 int	ft_env(t_shell *shell)
 {
-	t_env	*current;
+	t_envp	*current;
 
-	if (!shell || !shell->env_list)
+	if (!shell || !shell->envp_list)
 		return (FAILURE);
-	current = shell->env_list;
+	current = shell->envp_list;
 	while (current)
 	{
 		if (current->key && current->value)

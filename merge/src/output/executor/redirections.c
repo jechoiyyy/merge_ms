@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:00:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/04 19:00:05 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 14:23:31 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ int	setup_redirections(t_cmd *cmd)
 	fd_out = -1;
 	if (cmd->input_file)
 	{
-		fd_in = open_input_file(cmd->input_file);
+		if (cmd->input_file->flag == 1)
+			return (print_error("export값", "ambiguous redirect"), FAILURE);
+		fd_in = open_input_file(cmd->input_file->filename);
 		if (fd_in == -1)
 			return (FAILURE);
 		if (dup2(fd_in, STDIN_FILENO) == -1)
@@ -35,7 +37,9 @@ int	setup_redirections(t_cmd *cmd)
 	}
 	if (cmd->output_file)
 	{
-		fd_out = open_output_file(cmd->output_file, cmd->append_mode);
+		if (cmd->output_file->flag == 1)
+			return (print_error("export값", "ambiguous redirect"), FAILURE);
+		fd_out = open_output_file(cmd->output_file->filename, cmd->append_mode);
 		if (fd_out == -1)
 			return (FAILURE);
 		if (dup2(fd_out, STDOUT_FILENO) == -1)
@@ -45,9 +49,9 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(fd_out);
 	}
-	if (cmd->heredoc_delimiter)
+	if (cmd->hd)
 	{
-		fd_in = setup_heredoc(cmd->heredoc_delimiter); // 여기를 받아온 fd로 사용
+		fd_in = cmd->hd;
 		if (fd_in == -1)
 			return (FAILURE);
 		if (dup2(fd_in, STDIN_FILENO) == -1)
@@ -96,31 +100,31 @@ int	open_output_file(char *filename, int append_mode)
 	return (fd);
 }
 
-int	setup_heredoc(char *delimiter)
-{
-	int		pipe_fd[2];
-	char	*line;
-	char	buffer[1024];
+// int	setup_heredoc(int fd)
+// {
+// 	int		pipe_fd[2];
+// 	char	*line;
+// 	char	buffer[1024];
 
-	if (!delimiter)
-		return (-1);
-	if (pipe(pipe_fd) == -1)
-	{
-		perror("pipe");
-		return (-1);
-	}
-	printf("heredoc> ");
-	while (fgets(buffer, sizeof(buffer), stdin))
-	{
-		line = buffer;
-		while (*line && (*line == ' ' || *line == '\t'))
-			line++;
-		if (strncmp(line, delimiter, strlen(delimiter)) == 0
-			&& (line[strlen(delimiter)] == '\n' || line[strlen(delimiter)] == '\0'))
-			break ;
-		write(pipe_fd[WRITE_END], buffer, strlen(buffer));
-		printf("heredoc> ");
-	}
-	close(pipe_fd[WRITE_END]);
-	return (pipe_fd[READ_END]);
-}
+// 	if (!delimiter)
+// 		return (-1);
+// 	if (pipe(pipe_fd) == -1)
+// 	{
+// 		perror("pipe");
+// 		return (-1);
+// 	}
+// 	printf("heredoc> ");
+// 	while (fgets(buffer, sizeof(buffer), stdin))
+// 	{
+// 		line = buffer;
+// 		while (*line && (*line == ' ' || *line == '\t'))
+// 			line++;
+// 		if (strncmp(line, delimiter, strlen(delimiter)) == 0
+// 			&& (line[strlen(delimiter)] == '\n' || line[strlen(delimiter)] == '\0'))
+// 			break ;
+// 		write(pipe_fd[WRITE_END], buffer, strlen(buffer));
+// 		printf("heredoc> ");
+// 	}
+// 	close(pipe_fd[WRITE_END]);
+// 	return (pipe_fd[READ_END]);
+// }

@@ -6,11 +6,11 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:02:38 by jechoi            #+#    #+#             */
-/*   Updated: 2025/08/27 20:09:18 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 13:38:48 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
+#include "builtins.h"
 
 static int	is_n_option(char *arg)
 {

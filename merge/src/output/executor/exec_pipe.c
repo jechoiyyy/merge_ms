@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:57:14 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 13:49:32 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 17:21:20 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int *pipe_fds,
 {
 	pid_t	pid;
 
-	pid = fork_process();
+	pid = fork_process(); 
 	if (pid == -1)
 		return (-1);
 	if (pid == 0)
@@ -110,12 +110,11 @@ int	execute_pipeline(t_cmd *commands, t_shell *shell)
 	int		cmd_count;
 	int		i;
 
-	if (!commands)
+	if (!commands || !shell)
 		return (FAILURE);
 	
 	cmd_count = count_commands(commands);
-	
-	// 단일 빌트인 명령어 처리
+
 	if (cmd_count == 1 && is_builtin_command(commands->args[0]))
 		return (handle_single_builtin(commands, shell));
 	

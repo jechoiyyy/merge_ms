@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 17:32:35 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 12:29:19 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/10 14:27:09 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	is_valid_identifier(char *name)
 	return (1);
 }
 
-char	*extract_key(char *arg)
+char	*extract_key2(char *arg)
 {
 	char	*equal_pos;
 	char	*key;
@@ -69,11 +69,11 @@ char	*extract_value(char *arg)
 	return (value);
 }
 
-t_envp	*find_env_node(t_envp *env_list, char *key)
+t_envp	*find_env_node(t_envp *envp_list, char *key)
 {
 	t_envp	*current;
 
-	current = env_list;
+	current = envp_list;
 	while (current)
 	{
 		if (current->key && ft_strcmp(current->key, key) == 0)
