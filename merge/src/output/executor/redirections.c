@@ -6,11 +6,12 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:00:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/10 14:23:31 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/11 11:46:35 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include <stdio.h>
 
 int	setup_redirections(t_cmd *cmd)
 {
@@ -39,6 +40,7 @@ int	setup_redirections(t_cmd *cmd)
 	if (cmd->output_file && cmd->output_file->filename && 
 		strcmp(cmd->output_file->filename, "NULL") != 0)
 	{
+		printf("flag = %d\n", cmd->output_file->flag);
 		if (cmd->output_file->flag == 1)
 			return (print_error("export값", "ambiguous redirect"), FAILURE);
 		fd_out = open_output_file(cmd->output_file->filename, cmd->append_mode);

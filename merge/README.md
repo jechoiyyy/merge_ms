@@ -210,5 +210,158 @@ static int create_pipes(int **pipe_fds, int cmd_count)
 
 ---
 
-*수정 완료일: 2025년 9월 10일*  
+## 🔧 리다이렉션/히어독 파싱 오류 수정
+
+### 발견된 문제점
+
+#### 1. 리다이렉션이 명령어보다 먼저 올 때 파싱 오류
+- **증상**: `< file cat`, `> output.txt echo hello` 등이 "syntax error near unexpected token" 발생
+- **원인**: `parse_simple_command` 함수에서 `!cmd->args` 조건으로 명령어 부재 시 무조건 오류 처리
+
+#### 2. 히어독 + 다른 리다이렉션 조합 시 세그멘테이션 폴트
+- **증상**: `<< a >> test.txt` 입력 시 segmentation fault 발생
+- **원인 1**: `parse_redirections` 함수에서 `T_HEREDOC` 케이스 누락
+- **원인 2**: `execute_pipeline`에서 `commands->args[0]` NULL 포인터 접근
+
+### 수정 내용
+
+#### 1. `is_valid_command` 함수 추가 (`src/output/parser/parse_command.c`)
+
+**수정 전:**
+```c
+if (!cmd->args)
+{
+    printf("minishell: syntax error near unexpected token\n");
+    free_commands(cmd);
+    return (NULL);
+}
+```
+
+**수정 후:**
+```c
+static int	is_valid_command(t_cmd *cmd)
+{
+	if (cmd->args)                                    // 명령어가 있음
+		return (SUCCESS);
+	if (cmd->input_file->filename || cmd->output_file->filename)  // 리다이렉션이 있음
+		return (SUCCESS);
+	if (cmd->hd != -1)                               // 히어독이 있음
+		return (SUCCESS);
+	return (FAILURE);	
+}
+
+if (is_valid_command(cmd) == FAILURE)
+{
+    printf("minishell: syntax error near unexpected token\n");
+    free_commands(cmd);
+    return (NULL);
+}
+```
+
+**핵심 개선점:**
+- 명령어가 없어도 리다이렉션이나 히어독이 있으면 유효한 구문으로 처리
+- 리다이렉션이 먼저 오는 경우 정상 파싱 가능
+
+#### 2. 히어독 케이스 처리 추가 (`src/output/parser/parse_command.c`)
+
+**수정 전:**
+```c
+if (redir_type == T_REDIR_IN)
+    set_input_file(cmd->input_file, *current);
+else if (redir_type == T_REDIR_OUT)
+    set_output_file(cmd, *current, 0);
+else if (redir_type == T_APPEND)
+    set_output_file(cmd, *current, 1);
+// T_HEREDOC 케이스 없음!
+```
+
+**수정 후:**
+```c
+if (redir_type == T_REDIR_IN)
+    set_input_file(cmd->input_file, *current);
+else if (redir_type == T_REDIR_OUT)
+    set_output_file(cmd, *current, 0);
+else if (redir_type == T_APPEND)
+    set_output_file(cmd, *current, 1);
+else if (redir_type == T_HEREDOC)
+{
+    // heredoc은 이미 hd_lst에서 처리됨, delimiter만 건너뛰기
+}
+```
+
+#### 3. NULL 포인터 접근 방지 (`src/output/executor/exec_pipe.c`)
+
+**수정 전:**
+```c
+if (cmd_count == 1 && is_builtin_command(commands->args[0]))
+    return (handle_single_builtin(commands, shell));
+```
+
+**수정 후:**
+```c
+if (cmd_count == 1 && commands->args && is_builtin_command(commands->args[0]))
+    return (handle_single_builtin(commands, shell));
+```
+
+**핵심 개선점:**
+- `commands->args`가 NULL인 경우 체크 추가
+- 명령어 없이 리다이렉션만 있는 경우 안전 처리
+
+### 수정 결과
+
+#### 테스트 성공 사례:
+
+1. **리다이렉션이 먼저 오는 경우**:
+   ```bash
+   minishell$ < /etc/passwd cat
+   # /etc/passwd 파일 내용 정상 출력
+   
+   minishell$ > output.txt echo hello
+   # hello가 output.txt에 정상 기록
+   
+   minishell$ >> log.txt echo appended
+   # 파일에 append 모드로 정상 기록
+   ```
+
+2. **히어독 조합 처리**:
+   ```bash
+   minishell$ << EOF cat > output.txt
+   hello world
+   EOF
+   # heredoc 내용이 output.txt에 정상 기록
+   
+   minishell$ << a >> test.txt
+   # 명령어 없는 경우도 segfault 없이 정상 처리 (args=NULL)
+   ```
+
+3. **복합 리다이렉션**:
+   ```bash
+   minishell$ < /etc/passwd << END cat
+   test line
+   END
+   # 입력 리다이렉션과 히어독 동시 처리
+   ```
+
+### 성능 개선:
+- **세그멘테이션 폴트 제거**: 히어독 관련 모든 케이스에서 안전한 실행
+- **파싱 오류 해결**: 리다이렉션 순서와 관계없이 정상 파싱
+- **NULL 포인터 보호**: 명령어 없는 경우 안전 처리
+
+### 주요 학습 포인트:
+
+1. **SUCCESS/FAILURE 매크로와 논리 연산자 주의**
+   - `SUCCESS = 0`, `FAILURE = 1`일 때 `!function()` 사용 시 반대 결과
+   - 명시적 비교 (`== FAILURE`) 권장
+
+2. **파싱 단계별 케이스 완전성**
+   - 모든 토큰 타입에 대한 처리 로직 필요
+   - 누락된 케이스는 예상치 못한 오류 야기
+
+3. **NULL 포인터 방어적 프로그래밍**
+   - 포인터 접근 전 항상 NULL 체크
+   - 특히 파싱 결과 데이터 구조 접근 시 주의
+
+---
+
+*리다이렉션/히어독 파싱 수정 완료일: 2025년 9월 11일*  
 *수정자: Claude Code Assistant*

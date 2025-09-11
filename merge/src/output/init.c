@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/22 09:05:00 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/10 13:31:57 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/11 11:15:32 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,15 +130,29 @@ char	**env_list_to_array(t_envp *envp_list)
 	return (array);
 }
 
-int init_shell(t_shell *shell, t_envp *envp_lst)
+int init_shell(t_shell *shell, char **envp)
 {
+    int i;
+    t_envp   *env_node;
+
     if (!shell)
         return (FAILURE);
-    shell->envp_list = envp_lst;
+    shell->envp_list = NULL;
     shell->env_array = NULL;
     shell->last_exit_status = 0;
     shell->exit_flag = 0;
     shell->signal_mode = SIG_INTERACTIVE;
+    if (envp)
+    {
+        i = -1;
+        while (envp[++i])
+        {
+            env_node = create_env_node(envp[i]);
+            if (!env_node)
+                return (cleanup_shell(shell), FAILURE);
+            add_env_node(&shell->envp_list, env_node);
+        }
+    }
     shell->env_array = env_list_to_array(shell->envp_list);
     if (!shell->env_array && shell->envp_list)
         return (cleanup_shell(shell), FAILURE);

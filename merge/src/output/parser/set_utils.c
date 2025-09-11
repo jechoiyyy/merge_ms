@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 11:01:35 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/10 13:07:02 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/11 11:43:23 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	set_output_file(t_cmd *cmd, t_token *current, int append)
 			return ;
 		ft_strcpy(new_file->filename, current->value);
 		if (current->type == T_WRONG_FILNAME)
-			new_file->flag = 1;
+			cmd->output_file->flag = 1;
 		add_filename_to_list(&(cmd->output_file), new_file);
 	}
 	cmd->append_mode = append;

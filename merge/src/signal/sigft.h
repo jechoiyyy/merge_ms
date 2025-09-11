@@ -8,8 +8,6 @@
 # define SIG_NON_INTERACTIVE 0
 # define SIG_CHILD 2
 
-extern volatile sig_atomic_t g_signal_received;
-
 void	setup_signals(void);
 void	signal_handler_interactive(int sig);
 void	signal_handler_noninteractive(int sig);

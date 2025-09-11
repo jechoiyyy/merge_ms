@@ -148,7 +148,7 @@ int	execute_pipeline(t_cmd *commands, t_shell *shell)
 	
 	cmd_count = count_commands(commands);
 
-	if (cmd_count == 1 && is_builtin_command(commands->args[0]))
+	if (cmd_count == 1 && commands->args && is_builtin_command(commands->args[0]))
 		return (handle_single_builtin(commands, shell));
 	
 	// 파이프 생성

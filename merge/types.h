@@ -6,13 +6,15 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:41:47 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/10 16:12:07 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/11 11:23:47 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TYPES_H
 # define TYPES_H
+
 # include <unistd.h>
+# include <signal.h>
 
 # define SUCCESS 0
 # define FAILURE 1
@@ -20,6 +22,8 @@
 # define SIG_INTERACTIVE 1
 # define SIG_NON_INTERACTIVE 0
 # define SIG_CHILD 2
+
+extern volatile sig_atomic_t g_signal_received;
 
 typedef struct s_envp
 {

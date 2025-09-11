@@ -6,11 +6,22 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/26 21:43:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/10 13:18:59 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/11 13:09:22 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser.h"
+
+static int	is_valid_command(t_cmd *cmd)
+{
+	if (cmd->args)
+		return (SUCCESS);
+	if (cmd->input_file->filename || cmd->output_file->filename)
+		return (SUCCESS);
+	if (cmd->hd != -1)
+		return (SUCCESS);
+	return (FAILURE);	
+}
 
 t_cmd	*parse_simple_command(t_token **current, t_prompt *prompt)
 {
@@ -39,7 +50,7 @@ t_cmd	*parse_simple_command(t_token **current, t_prompt *prompt)
 		else
 			break ;
 	}
-	if (!cmd->args)
+	if (is_valid_command(cmd) == FAILURE)
 	{
 		printf("minishell: syntax error near unexpected token\n");
 		free_commands(cmd);
@@ -69,6 +80,10 @@ int	parse_redirections(t_token **current, t_cmd *cmd)
 		set_output_file(cmd, *current, 0);
 	else if (redir_type == T_APPEND)
 		set_output_file(cmd, *current, 1);
+	else if (redir_type == T_HEREDOC)
+	{
+		// heredoc은 이미 hd_lst에서 처리됨, delimiter만 건너뛰기
+	}
 	*current = (*current)->next;
 	return (SUCCESS);
 }
