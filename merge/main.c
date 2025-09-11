@@ -24,13 +24,17 @@ int	main(int ac, char **av, char **envp)
 			g_exit_status = 0;
 		exit_status = output_process(&shell, &prompt);
 		free(prompt.input);
+		prompt.input = NULL;
 		clear_token_list(&prompt.token_lst);
 		clear_hd_list(&prompt.hd_lst);
-		
 	}
-	free(prompt.input);
-	clear_token_list(&prompt.token_lst);
-	clear_envp_list(&prompt.envp_lst);
-	clear_hd_list(&prompt.hd_lst);
+	cleanup_shell(&shell);
+	if (prompt.token_lst || prompt.input)
+	{
+		free(prompt.input);
+		clear_token_list(&prompt.token_lst);
+		clear_envp_list(&prompt.envp_lst);
+		clear_hd_list(&prompt.hd_lst);
+	}
 	return (exit_status);
 }

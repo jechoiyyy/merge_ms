@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 10:49:06 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/09 21:11:01 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 04:53:32 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ t_cmd	*create_command(t_hd *hd_lst)
 	cmd->output_file = create_filename();
 	if (!cmd->output_file)
 		return (free(cmd->input_file), free(cmd), NULL);
-	cmd->append_mode = 0;
 	cmd->next = NULL;
 	last = hd_lst;
 	if (last)

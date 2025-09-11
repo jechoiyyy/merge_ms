@@ -6,27 +6,41 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:00:39 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/11 11:46:35 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 05:18:56 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include <stdio.h>
 
-int	setup_redirections(t_cmd *cmd)
+int	setup_redirections(t_cmd *cmd, int cmd_index, int cmd_count)
 {
 	int	fd_in;
 	int	fd_out;
+	int	heredoc_fd;
+	t_filename *file;
 
+	(void)cmd_index;
+	(void)cmd_count;
 	if (!cmd)
 		return (FAILURE);
 	fd_in = -1;
 	fd_out = -1;
+	heredoc_fd = -1;
+
+	// heredoc 처리 - fd는 나중에 닫기
+	if (cmd->hd && cmd->hd != -1)
+	{
+		heredoc_fd = cmd->hd;
+		if (dup2(cmd->hd, STDIN_FILENO) == -1)
+			return (close(cmd->hd), FAILURE);
+	}
+	// 입력 리다이렉션 처리 (stdin)
 	if (cmd->input_file && cmd->input_file->filename && 
-		strcmp(cmd->input_file->filename, "NULL") != 0)
+		ft_strcmp(cmd->input_file->filename, "NULL") != 0)
 	{
 		if (cmd->input_file->flag == 1)
-			return (print_error("export값", "ambiguous redirect"), FAILURE);
+			return (print_error(cmd->input_file->filename, "ambiguous redirect"), FAILURE);
 		fd_in = open_input_file(cmd->input_file->filename);
 		if (fd_in == -1)
 			return (FAILURE);
@@ -37,34 +51,35 @@ int	setup_redirections(t_cmd *cmd)
 		}
 		close(fd_in);
 	}
+	
+	// 출력 리다이렉션 처리 (stdout) - 파이프가 있는 중간 명령어에서는 출력 리다이렉션이 파이프를 덮어씀
 	if (cmd->output_file && cmd->output_file->filename && 
-		strcmp(cmd->output_file->filename, "NULL") != 0)
+		ft_strcmp(cmd->output_file->filename, "NULL") != 0)
 	{
-		printf("flag = %d\n", cmd->output_file->flag);
-		if (cmd->output_file->flag == 1)
-			return (print_error("export값", "ambiguous redirect"), FAILURE);
-		fd_out = open_output_file(cmd->output_file->filename, cmd->append_mode);
-		if (fd_out == -1)
-			return (FAILURE);
-		if (dup2(fd_out, STDOUT_FILENO) == -1)
+		file = cmd->output_file;
+		while (file)
 		{
-			close(fd_out);
-			return (FAILURE);
+			if (file->flag == 1)
+				return (print_error(file->filename, "ambiguous redirect"), FAILURE);
+			fd_out = open_output_file(file->filename, file->append_mode);
+			if (fd_out == -1)
+				return (FAILURE);
+			if (file->next == NULL)
+			{
+				if (dup2(fd_out, STDOUT_FILENO) == -1)
+				{
+						close(fd_out);
+						return (FAILURE);
+				}
+				close(fd_out);
+			}
+			file = file->next;
 		}
-		close(fd_out);
 	}
-	if (cmd->hd && cmd->hd != -1)
-	{
-		fd_in = cmd->hd;
-		if (fd_in == -1)
-			return (FAILURE);
-		if (dup2(fd_in, STDIN_FILENO) == -1)
-		{
-			close(fd_in);
-			return (FAILURE);
-		}
-		close(fd_in);
-	}
+	// heredoc fd는 마지막에 닫기
+	if (heredoc_fd != -1)
+		close(heredoc_fd);
+		
 	return (SUCCESS);
 }
 
@@ -103,32 +118,3 @@ int	open_output_file(char *filename, int append_mode)
 	}
 	return (fd);
 }
-
-// int	setup_heredoc(int fd)
-// {
-// 	int		pipe_fd[2];
-// 	char	*line;
-// 	char	buffer[1024];
-
-// 	if (!delimiter)
-// 		return (-1);
-// 	if (pipe(pipe_fd) == -1)
-// 	{
-// 		perror("pipe");
-// 		return (-1);
-// 	}
-// 	printf("heredoc> ");
-// 	while (fgets(buffer, sizeof(buffer), stdin))
-// 	{
-// 		line = buffer;
-// 		while (*line && (*line == ' ' || *line == '\t'))
-// 			line++;
-// 		if (strncmp(line, delimiter, strlen(delimiter)) == 0
-// 			&& (line[strlen(delimiter)] == '\n' || line[strlen(delimiter)] == '\0'))
-// 			break ;
-// 		write(pipe_fd[WRITE_END], buffer, strlen(buffer));
-// 		printf("heredoc> ");
-// 	}
-// 	close(pipe_fd[WRITE_END]);
-// 	return (pipe_fd[READ_END]);
-// }

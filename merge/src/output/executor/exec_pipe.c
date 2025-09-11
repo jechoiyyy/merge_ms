@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:57:14 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/10 17:21:20 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 00:10:12 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,21 +60,6 @@ static int	create_pipes(int **pipe_fds, int cmd_count)
 	return (SUCCESS);
 }
 
-// static void	close_all_pipes_local(int *pipe_fds, int cmd_count)
-// {
-// 	int	i;
-
-// 	if (!pipe_fds || cmd_count <= 1)
-// 		return ;
-// 	i = 0;
-// 	while (i < cmd_count - 1)
-// 	{
-// 		close(pipe_fds[i * 2]);
-// 		close(pipe_fds[i * 2 + 1]);
-// 		i++;
-// 	}
-// }
-
 static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int *pipe_fds, 
 							int cmd_index, int cmd_count)
 {
@@ -91,7 +76,7 @@ static int	fork_and_execute(t_cmd *cmd, t_shell *shell, int *pipe_fds,
 		setup_child_process(cmd, pipe_fds, cmd_index, cmd_count);
 		
 		// 2. 리다이렉션 설정 (파이프 설정 후에)
-		if (setup_redirections(cmd) == FAILURE)
+		if (setup_redirections(cmd, cmd_index, cmd_count) == FAILURE)
 			exit(1);
 		
 		// 3. 명령어 유효성 검사
@@ -128,10 +113,49 @@ static void	cleanup_resources(int *pipe_fds, pid_t *pids, int cmd_count)
 static int	handle_single_builtin(t_cmd *commands, t_shell *shell)
 {
 	int	result;
+	int	saved_stdout;
+	int	saved_stdin;
+
+	// 리다이렉션이 있는 경우를 위해 원본 파일 디스크립터 저장
+	saved_stdout = -1;
+	saved_stdin = -1;
+	
+	// 리다이렉션 처리
+	if (commands->output_file && commands->output_file->filename && 
+		ft_strcmp(commands->output_file->filename, "NULL") != 0)
+	{
+		saved_stdout = dup(STDOUT_FILENO);
+	}
+	if ((commands->input_file && commands->input_file->filename && 
+		ft_strcmp(commands->input_file->filename, "NULL") != 0) ||
+		(commands->hd && commands->hd != -1))
+	{
+		saved_stdin = dup(STDIN_FILENO);
+	}
+	
+	if (setup_redirections(commands, 0, 1) == FAILURE)
+	{
+		if (saved_stdout != -1) close(saved_stdout);
+		if (saved_stdin != -1) close(saved_stdin);
+		return (FAILURE);
+	}
 
 	// 단일 빌트인 명령어는 현재 쉘에서 직접 실행
 	result = execute_builtin(commands, shell);
 	shell->last_exit_status = result;
+	
+	// 리다이렉션 복구
+	if (saved_stdout != -1)
+	{
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdout);
+	}
+	if (saved_stdin != -1)
+	{
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
+	}
+	
 	return (result);
 }
 
@@ -184,13 +208,10 @@ int	execute_pipeline(t_cmd *commands, t_shell *shell)
 		current = current->next;
 		i++;
 	}
-	
 	// 부모 프로세스에서 모든 파이프 닫기
 	close_all_pipes(pipe_fds, cmd_count - 1);  // 헤더의 함수 사용
-	
 	// 모든 자식 프로세스 종료 대기
 	shell->last_exit_status = wait_for_children(pids, cmd_count);
-	
 	// 리소스 정리
 	cleanup_resources(pipe_fds, pids, cmd_count);
 	

@@ -32,11 +32,11 @@ void	print_output_file_list(t_filename *head)
 	index = 0;
 	while (current)
 	{
-		printf("  [%d] filename: \"%s\", flag: %d (%s)\n", 
+		printf("  [%d] filename: \"%s\", flag: %d (%s), append_mode: %d\n", 
 			   index, 
 			   current->filename ? current->filename : "NULL",
 			   current->flag,
-			   current->flag ? "WRONG" : "CORRECT");
+			   current->flag ? "WRONG" : "CORRECT", current->append_mode);
 		current = current->next;
 		index++;
 	}
@@ -80,10 +80,6 @@ void print_cmd(t_cmd *cmd, int index)
         print_output_file_list(cmd->output_file);
     else
         printf("NULL\n");
-    
-    // append_mode 출력
-    printf("  append_mode: %d (%s)\n", 
-           cmd->append_mode, cmd->append_mode ? "TRUE (>>)" : "FALSE (>)");
     
     // hd (파일 디스크립터) 출력
     printf("  hd (file descriptor): %d", cmd->hd);
@@ -150,8 +146,6 @@ void print_cmd_summary(t_cmd *head)
             printf("(%s)", current->args[0]);
         if (current->input_file && current->input_file->filename)
             printf("<");
-        if (current->output_file && current->output_file->filename)
-            printf(current->append_mode ? ">>" : ">");
         if (current->hd > 2)  // 표준 fd가 아닌 경우
             printf("[fd:%d]", current->hd);
         

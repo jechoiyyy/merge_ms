@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   envp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsagong <dsagong@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/14 13:44:04 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/05 17:40:47 by dsagong          ###   ########.fr       */
+/*   Updated: 2025/09/12 03:32:27 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,9 @@ void	clear_envp_list(t_envp **envp_list)
 	{
 		next = curr->next;
 		free(curr->key);
+		curr->key = NULL;
 		free(curr->value);
+		curr->value = NULL;
 		free(curr);
 		curr = next;
 	}

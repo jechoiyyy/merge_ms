@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/03 14:41:47 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/11 11:23:47 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 04:53:22 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ typedef struct s_filename
 {
     char    *filename;
     int     flag;
+	int		append_mode;
 	struct s_filename	*next;
 }   t_filename;
 
@@ -100,7 +101,6 @@ typedef struct  s_cmd
     char    **args;
     t_filename    *input_file;
     t_filename    *output_file;
-    int     append_mode;
     int		hd;
     struct s_cmd    *next;
 }   t_cmd;

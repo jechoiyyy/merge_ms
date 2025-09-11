@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 19:58:34 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/05 16:11:14 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 00:06:30 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	execute_command(t_cmd *cmd, t_shell *shell)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (FAILURE);
-	if (setup_redirections(cmd) == FAILURE)
+	if (setup_redirections(cmd, 0, 1) == FAILURE)
 		return (FAILURE);
 	if (is_builtin_command(cmd->args[0]))
 		return (execute_builtin(cmd, shell));
@@ -65,6 +65,5 @@ int	execute_external(t_cmd *cmd, t_shell *shell)
 		free(executable_path);
 		return (126);
 	}
-	free(executable_path);
 	return (SUCCESS);
 }

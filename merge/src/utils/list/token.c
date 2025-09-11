@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsagong <dsagong@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/21 09:52:37 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/07 18:28:41 by dsagong          ###   ########.fr       */
+/*   Updated: 2025/09/12 03:30:36 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ void	clear_token_list(t_token **token_list)
 	{
 		next = curr->next;
 		free(curr->value);
+		curr->value = NULL;
 		free(curr);
 		curr = next;
 	}

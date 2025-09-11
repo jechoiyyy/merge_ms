@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   herdoc.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dsagong <dsagong@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/02 10:57:37 by dsagong           #+#    #+#             */
-/*   Updated: 2025/09/03 09:44:20 by dsagong          ###   ########.fr       */
+/*   Updated: 2025/09/12 03:31:43 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	clear_hd_list(t_hd **hd_list)
 		next = curr->next;
 		close(curr->fd);
 		free(curr);
+		curr = NULL;
 		curr = next;
 	}
 	*hd_list = NULL;

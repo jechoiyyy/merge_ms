@@ -6,7 +6,7 @@
 /*   By: jechoi <jechoi@student.42gyeongsan.kr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 20:00:08 by jechoi            #+#    #+#             */
-/*   Updated: 2025/09/05 16:27:07 by jechoi           ###   ########.fr       */
+/*   Updated: 2025/09/12 03:40:47 by jechoi           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ void	setup_child_process(t_cmd *cmd, int *pipe_fds, \
 							int cmd_index, int cmd_count)
 {
 	(void)cmd;
-	// stdin 설정: 첫 번째 명령어가 아닌 경우 이전 파이프의 read end 연결
-	if (cmd_index > 0)
+	// stdin 설정: heredoc이 없고 파이프가 있는 경우에만 처리
+	// heredoc은 setup_redirections에서 처리
+	if (!(cmd->hd && cmd->hd != -1) && cmd_index > 0)
 	{
 		if (dup2(pipe_fds[(cmd_index - 1) * 2 + READ_END], STDIN_FILENO) == -1)
 		{
@@ -60,7 +61,6 @@ void	setup_child_process(t_cmd *cmd, int *pipe_fds, \
 			exit(1);
 		}
 	}
-	// stdout 설정: 마지막 명령어가 아닌 경우 현재 파이프의 write end 연결
 	if (cmd_index < cmd_count - 1)
 	{
 		if (dup2(pipe_fds[cmd_index * 2 + WRITE_END], STDOUT_FILENO) == -1)
@@ -106,7 +106,7 @@ void	close_all_pipes(int *pipe_fds, int pipe_count)
 		if (pipe_fds[i] >= 0)
 		{
 			close(pipe_fds[i]);
-			pipe_fds[i] = -1;  // 닫은 후 -1로 표시
+			pipe_fds[i] = -1;  // 성공/실패 관계없이 -1로 설정
 		}
 		i++;
 	}
